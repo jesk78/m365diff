@@ -32,12 +32,13 @@ func main() {
 	body, err := ioutil.ReadAll(resp.Body) // response body is []byte
 
 	var result Services
-	if err := json.Unmarshal(body, &result); err != nil { // Parse []byte to go struct pointer
+	if err := json.Unmarshal(body, &result); err != nil { // Parse []byte into slice of structs (type Services)
 		fmt.Println("Can not unmarshal JSON")
 	}
-
+	// map of services (eg. tcp/123) to slice of CIDR networks
 	smap := make(map[string][]string)
 	for _, v := range result {
+		// TCP keys(services)
 		if len(v.Ips) > 0 && v.TCPPorts != "" {
 			tcpPorts := strings.Split(v.TCPPorts, ",")
 			for _, p := range tcpPorts {
@@ -46,6 +47,7 @@ func main() {
 					smap[service] = append(smap[service], ip)
 				}
 			}
+			// UDP keys(services)
 		} else if len(v.Ips) > 0 && v.UDPPorts != "" {
 			udpPorts := strings.Split(v.UDPPorts, ",")
 			for _, p := range udpPorts {
