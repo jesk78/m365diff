@@ -38,25 +38,20 @@ func main() {
 
 	smap := make(map[string][]string)
 	for _, v := range result {
-		if len(v.Ips) > 0 {
-			if v.TCPPorts != "" {
-				tcpPorts := strings.Split(v.TCPPorts, ",")
-
-				for _, p := range tcpPorts {
-					service := "tcp/" + p
-					for _, ip := range v.Ips {
-						smap[service] = append(smap[service], ip)
-					}
+		if len(v.Ips) > 0 && v.TCPPorts != "" {
+			tcpPorts := strings.Split(v.TCPPorts, ",")
+			for _, p := range tcpPorts {
+				service := "tcp/" + p
+				for _, ip := range v.Ips {
+					smap[service] = append(smap[service], ip)
 				}
 			}
-			if v.UDPPorts != "" {
-				udpPorts := strings.Split(v.UDPPorts, ",")
-
-				for _, p := range udpPorts {
-					service := "udp/" + p
-					for _, ip := range v.Ips {
-						smap[service] = append(smap[service], ip)
-					}
+		} else if len(v.Ips) > 0 && v.UDPPorts != "" {
+			udpPorts := strings.Split(v.UDPPorts, ",")
+			for _, p := range udpPorts {
+				service := "udp/" + p
+				for _, ip := range v.Ips {
+					smap[service] = append(smap[service], ip)
 				}
 			}
 		}
